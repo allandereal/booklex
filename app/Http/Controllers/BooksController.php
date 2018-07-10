@@ -67,7 +67,7 @@ class BooksController extends Controller
                 return new BookResource($book);
             }
         }catch (QueryException $e){
-            return $e->getCode();
+            return $e->getMessage();
         }
 
         return null;
