@@ -22,11 +22,15 @@ class BooksController extends Controller
 
     public function search($q){
         $q = urldecode($q);
+        $db_books = Book::where('title', 'like', '%'.$q.'%')->take(20)->get();
+        if (count($db_books) > 0){
+            return BookResource::collection($db_books);
+        }
         if (stristr($q, ' ')){
             $strings = explode(' ', $q);
             $books = array();
             foreach ($strings as $string){
-                $db_books = Book::where('title', 'like', $string.'%')->take(20)->get();
+                $db_books = Book::where('title', 'like', '%'.$string.'%')->take(20)->get();
                 if (count($db_books) > 0){
                     foreach ($db_books as $db_book){
                         array_push($books, $db_book);
@@ -37,11 +41,12 @@ class BooksController extends Controller
                 return BookResource::collection($books);
             }
         }else{
-            $books = Book::where('title', 'like', $q.'%')->take(20)->get();
+            $books = Book::where('title', 'like', '%'.$q.'%')->take(20)->get();
             if (count($books) > 0){
                 return BookResource::collection($books);
             }
         }
+        return null;
     }
 
     /**
